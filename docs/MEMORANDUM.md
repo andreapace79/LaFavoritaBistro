@@ -194,3 +194,60 @@ Permessi esempio: `area.read`, `area.write`, `table.write`, `order.close`, `inve
 ---
 
 *(Aggiorna i checkbox man mano che completi le attività. Questo documento è la base di allineamento tra sessioni.)*
+# MEMORANDUM - Gestionale Bistrò
+
+---
+
+## ✅ Stato attuale (2025-10-02)
+
+- **Backend**
+  - Avviato con FastAPI + SQLAlchemy + PostgreSQL in Docker.
+  - Modulo RBAC: creazione utenti, lettura elenco utenti, aggiornamento (username e password).
+  - Testati endpoint via `curl` e Swagger UI → funzionanti.
+  - Database gestito in container, con volumi per la persistenza.
+
+- **Frontend**
+  - Next.js avviato in container.
+  - Pagina `index.js` con logo locale visibile.
+  - Pagina `users.js` collegata al backend → mostra elenco utenti, con struttura tabella (ID, username, azioni).
+  - UI ancora minimale (stile base, sfondo bianco, font arial).
+
+- **DevOps**
+  - Repository GitHub sincronizzato (`main` → stato locale aggiornato con `--force`).
+  - Docker Compose funzionante (backend + frontend + db).
+  - Struttura pulita (no `.next`, `node_modules`, ecc. nel repo).
+  - Backup giornaliero tracciato.
+
+---
+
+## 🔄 TODO prossimi step
+
+- **Frontend**
+  - Rifinire interfaccia `users.js`: creazione ed eliminazione utenti, ruoli/permessi.
+  - Migliorare design (`tailwindcss` o simile).
+  - Routing verso aree/tavoli, comande.
+
+- **Backend**
+  - Aree/tavoli editabili con layout grafico.
+  - Moduli: comande, ricette, magazzino, fornitori, spese, KPI/statistiche, timbrature dipendenti.
+  - Backup DB automatico + restore.
+  - Integrazione futura con registratore di cassa/POS esterni.
+
+- **Sistema**
+  - Automatizzare backup giornaliero DB e repo.
+  - Aggiungere test automatici (pytest).
+  - Configurare CI/CD base (GitHub Actions).
+
+---
+
+## 📊 Avanzamento progetto
+
+- **Avanzamento totale:** **25%**  
+- **Data stimata di fine lavori:** **2026-01-31**  
+  _(la stima tiene conto dell’attuale velocità di sviluppo e dei moduli ancora da completare)_
+
+---
+
+## 📦 Backup giornaliero
+
+- **2025-10-02** — commit `HEAD` su branch `main` — backend RBAC attivo, frontend avviato, logo e pagina utenti base funzionanti.
