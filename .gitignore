@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+
+# Virtual env
+venv/
+
+# Docker volumes
+db/data/
+
+# Env files
+.env
+.env.*
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# System
+.DS_Store
+Thumbs.db
