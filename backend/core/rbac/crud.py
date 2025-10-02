@@ -1,15 +1,18 @@
 from sqlalchemy.orm import Session
-from backend.core.rbac.models import User, Role, Permission
+from backend.core.rbac import models
 
-def get_user_by_username(db: Session, username: str):
-    return db.query(User).filter(User.username == username).first()
+def get_users(db: Session):
+    return db.query(models.User).all()
+
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
 
 def create_user(db: Session, username: str, hashed_password: str):
-    user = User(username=username, hashed_password=hashed_password)
-    db.add(user)
+    db_user = models.User(username=username, hashed_password=hashed_password)
+    db.add(db_user)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(db_user)
+    return db_user
 
 def create_role(db: Session, name: str):
     role = Role(name=name)
