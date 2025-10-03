@@ -1,14 +1,22 @@
 FROM python:3.12-slim
 
-WORKDIR /app
+# Set working dir
+WORKDIR /app/backend
 
-COPY backend/requirements.txt /app/requirements.txt
+# Copia requirements
+COPY backend/requirements.txt /app/backend/requirements.txt
 
-RUN pip install --no-cache-dir -r /app/requirements.txt
+# Installa dipendenze
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copia tutto il backend (codice, alembic.ini, ecc.)
 COPY backend /app/backend
+
+# Copia documentazione se serve
 COPY docs /app/docs
 
+# Espone la porta API
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Avvio del server FastAPI
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
