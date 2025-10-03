@@ -251,3 +251,88 @@ Permessi esempio: `area.read`, `area.write`, `table.write`, `order.close`, `inve
 ## 📦 Backup giornaliero
 
 - **2025-10-02** — commit `HEAD` su branch `main` — backend RBAC attivo, frontend avviato, logo e pagina utenti base funzionanti.
+
+Stato attuale (03/10/2025)
+
+✅ Backend
+
+Struttura base completata (FastAPI, moduli core e rbac).
+
+Alembic configurato e collegato al DB Postgres in Docker.
+
+Migrazioni iniziali create ed eseguite.
+
+Fixato problema postgres vs postgresql nel DATABASE_URL.
+
+Docker Compose aggiornato (backend, frontend, db funzionanti).
+
+Problema aperto: modello AuditLog → relazione con User non ancora allineata (errore mappers durante login).
+→ Richiede definizione corretta del modello + migrazione pulita.
+
+✅ Docker
+
+Backend e frontend containerizzati.
+
+Volumi frontend corretti (pages, public montati correttamente).
+
+Backend avviabile e raggiungibile su http://localhost:8000/docs.
+
+⚠️ Database
+
+Struttura creata con Alembic.
+
+Alcune migrazioni da rivedere (confusione nelle revisioni → da pulire).
+
+Audit log da aggiungere con relazione corretta a users.
+
+🚧 Frontend
+
+Docker build funzionante.
+
+Pages e statici montati.
+
+Non ancora integrato con API backend (solo struttura).
+
+Prossimi step (per domani)
+
+Migrazione pulita Alembic
+
+Ricreare la prima revisione stabile (init schema).
+
+Aggiungere tabella audit_logs con FK a users.
+
+Verificare che alembic upgrade head funzioni senza conflitti.
+
+Modello AuditLog
+
+Definire bene la relazione in User (relationship("AuditLog", back_populates="user")).
+
+Aggiornare modello in audit/models.py.
+
+Test login
+
+Creare utente demo con password hash.
+
+Testare endpoint /auth/login con POST {username, password}.
+
+Preparazione dati iniziali
+
+Script init_db per creare utenti admin + ruoli base.
+
+Verifica che API restituisca token valido.
+
+Percentuale avanzamento
+
+Backend: 35% (struttura solida, DB collegato, ma auth+audit incompleti).
+
+Frontend: 20% (struttura base pronta, integrazione ancora da fare).
+
+Docker/Infra: 60% (buona base, solo rifiniture).
+
+Totale progetto: 30%.
+
+Data stimata obiettivo 🎯
+
+Funzioni base pronte entro: 01/01/2026 (necessario per apertura bistrot).
+
+Completamento moduli avanzati: 31/01/2026.
