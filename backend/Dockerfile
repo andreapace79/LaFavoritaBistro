@@ -15,6 +15,9 @@ COPY backend /app/backend
 # Copia documentazione se serve
 COPY docs /app/docs
 
+# Imposta PYTHONPATH per risolvere i moduli backend.*
+ENV PYTHONPATH=/app
+
 # Espone la porta API
 EXPOSE 8000
 
