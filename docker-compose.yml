@@ -2,31 +2,37 @@
 services:
   db:
     image: postgres:15
+    container_name: bistro-db
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bistro
+      POSTGRES_DB: bistrodb
     ports:
-      - "55432:5432"
+      - "55432:5432"       # ✅ host 55432 → container 5432
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
     container_name: bistro-backend
+    restart: always
+    environment:
+      # usa le tue var/connessione come fa core.config/db
+      DB_HOST: db          # ✅ dentro la rete docker
+      DB_PORT: 5432        # ✅ porta interna del container Postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bistrodb
     depends_on:
       - db
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/bistrodb
-      SECRET_KEY: supersecretkey
+    ports:
+      - "8000:8000"
     volumes:
       - ./backend:/app/backend
       - ./docs:/app/docs
-    ports:
-      - "8000:8000"
 
   frontend:
     build:
@@ -41,3 +47,6 @@ services:
     volumes:
       - ./frontend:/app/frontend
       - /app/frontend/node_modules
+
+volumes:
+  db_data:

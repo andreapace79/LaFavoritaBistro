@@ -16,12 +16,10 @@ from backend.core.auth import (
     get_password_hash,
 )
 
-# RBAC / Users / Aree / Tavoli
+# RBAC / Modules
 from backend.core.rbac import crud as rbac_crud, schemas as rbac_schemas
-from backend.modules.users import crud as users_crud, schemas as users_schemas
 from backend.modules.areas import crud as areas_crud, schemas as areas_schemas
 from backend.modules.tables import crud as tables_crud, schemas as tables_schemas
-
 
 # ==========================================================
 # App setup
@@ -44,6 +42,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Import router dopo la creazione dell’app
+from backend.modules.users.router import router as users_router
+app.include_router(users_router, prefix="/users", tags=["users"])
 
 # ==========================================================
 # Health check
@@ -52,16 +53,12 @@ app.add_middleware(
 def health():
     return {"status": "ok", "service": settings.PROJECT_NAME}
 
-
 # ==========================================================
 # AUTH
 # ==========================================================
 @app.post("/auth/login", response_model=Token, tags=["auth"])
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    """
-    Esegui login con username/password.
-    Restituisce un JWT da usare come Bearer token.
-    """
+    """Esegui login con username/password."""
     return login_and_create_token(form_data, db)
 
 
@@ -76,10 +73,7 @@ def me(current_user=Depends(get_current_user)):
 # ==========================================================
 @app.get("/areas", tags=["areas"], dependencies=[Depends(require_permissions("areas.manage"))])
 def list_areas_example():
-    """
-    Esempio di endpoint protetto da permesso RBAC.
-    Sostituisci con l'implementazione reale nel modulo Aree.
-    """
+    """Esempio di endpoint protetto da permesso RBAC"""
     return {"items": [], "note": "Questo è un placeholder protetto da RBAC."}
 
 
@@ -88,24 +82,18 @@ def list_areas_example():
 # ==========================================================
 @app.post("/dev/seed", tags=["dev"])
 def dev_seed(db: Session = Depends(get_db)):
-    """
-    Popola dati base in ambiente di sviluppo:
-    - Admin user (admin/admin)
-    - Ruolo admin con permessi wildcard '*'
-    - Area 'Interno' e due tavoli di esempio
-    """
-    # ✅ Blocco seed se in produzione
+    """Popola dati base in ambiente di sviluppo"""
     if getattr(settings, "ENV", "development").lower() == "production":
         raise HTTPException(status_code=403, detail="Seed disabilitato in ambiente di produzione")
 
     try:
         # 1️⃣ Utente admin
+        from backend.modules.users import crud as users_crud, schemas as users_schemas
         user = users_crud.get_user_by_username(db, "admin")
         if not user:
             hashed_pw = get_password_hash("admin")
             user = users_crud.create_user(
-                db,
-                users_schemas.UserCreate(username="admin", password=hashed_pw),
+                db, users_schemas.UserCreate(username="admin", password=hashed_pw)
             )
 
         # 2️⃣ Ruolo admin
@@ -134,12 +122,8 @@ def dev_seed(db: Session = Depends(get_db)):
 
         tables = tables_crud.list_tables_by_area(db, area.id)
         if not tables:
-            tables_crud.create_table(
-                db, tables_schemas.TableCreate(area_id=area.id, name="T1", seats=4)
-            )
-            tables_crud.create_table(
-                db, tables_schemas.TableCreate(area_id=area.id, name="T2", seats=2)
-            )
+            tables_crud.create_table(db, tables_schemas.TableCreate(area_id=area.id, name="T1", seats=4))
+            tables_crud.create_table(db, tables_schemas.TableCreate(area_id=area.id, name="T2", seats=2))
 
         return {
             "status": "ok",
@@ -160,7 +144,6 @@ def dev_seed(db: Session = Depends(get_db)):
 # ==========================================================
 @app.get("/ping", tags=["system"])
 def ping():
-    """Endpoint diagnostico usato per test container e healthcheck"""
     return {"pong": True}
 
 

@@ -1,25 +1,28 @@
 FROM python:3.12-slim
 
-# Set working dir
-WORKDIR /app/backend
+# Dipendenze di sistema minime (opzionale ma utile per psycopg2-binary)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential && \
+    rm -rf /var/lib/apt/lists/*
 
 # Copia requirements
-COPY backend/requirements.txt /app/backend/requirements.txt
+WORKDIR /app
+COPY backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Installa dipendenze
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copia tutto il backend (codice, alembic.ini, ecc.)
+# Copia il codice
 COPY backend /app/backend
-
-# Copia documentazione se serve
 COPY docs /app/docs
 
-# Imposta PYTHONPATH per risolvere i moduli backend.*
+# 👇 Punto importante: il package 'backend' sta in /app/backend,
+# quindi aggiungo /app a PYTHONPATH per poter importare "backend.*"
 ENV PYTHONPATH=/app
 
-# Espone la porta API
+# Torno a lavorare nel path che usi tu
+WORKDIR /app/backend
+
 EXPOSE 8000
 
-# Avvio del server FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Avvio coerente con i tuoi import ("from backend.core..."): 
+# uso il modulo completo 'backend.main:app' (funziona anche se il WORKDIR è /app/backend)
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
