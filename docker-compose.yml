@@ -41,12 +41,12 @@ services:
     container_name: bistro-frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "3000:80"              # ✅ host 3000 → container 80 (non 3000:3000)
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app/frontend
-      - /app/frontend/node_modules
+      - ./frontend:/app        # ✅ se vuoi aggiornare asset locali
+    command: ["nginx", "-g", "daemon off;"]  # ✅ mantiene Nginx in foreground
 
 volumes:
   db_data:

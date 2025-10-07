@@ -1,23 +1,15 @@
-# Usa Node.js ufficiale
-FROM node:18-alpine
+# --- Build stage ---
+FROM node:20-alpine AS build
+WORKDIR /app/frontend
 
-# Imposta working dir
-WORKDIR /app
-
-# Copia prima i file di configurazione
-COPY package.json package-lock.json* ./
-
-# Installa dipendenze
+COPY package*.json ./
 RUN npm install
 
-# Copia il resto del codice frontend
 COPY . .
-
-# Build app Next.js
 RUN npm run build
 
-# Espone porta Next.js
+# --- Serve stage ---
+FROM nginx:alpine
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
 EXPOSE 3000
-
-# Avvia in modalità produzione
-CMD ["npm", "start"]
+CMD ["nginx", "-g", "daemon off;"]
