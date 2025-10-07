@@ -1,10 +1,8 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, Text
+# backend/core/rbac/models.py
+from sqlalchemy import Column, Integer, String, Table, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from backend.core.db import Base
 
-# ==========================================================
-# Tabelle di associazione
-# ==========================================================
 user_roles = Table(
     "user_roles",
     Base.metadata,
@@ -21,32 +19,23 @@ role_permissions = Table(
     extend_existing=True,
 )
 
-# ==========================================================
-# Modelli principali
-# ==========================================================
-
-
 class Role(Base):
     __tablename__ = "roles"
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), unique=True, nullable=False)
+    description = Column(Text, default="")
 
-    users = relationship("User", secondary=user_roles, back_populates="roles")
-    permissions = relationship(
-        "Permission", secondary=role_permissions, back_populates="roles"
-    )
-
+    users = relationship("backend.modules.users.models.User", secondary=user_roles, back_populates="roles")
+    permissions = relationship("Permission", secondary=role_permissions, back_populates="roles")
 
 class Permission(Base):
     __tablename__ = "permissions"
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(50), unique=True, nullable=False)
-    description = Column(Text)
+    code = Column(String(50), unique=True, nullable=False)
+    description = Column(Text, default="")
 
-    roles = relationship(
-        "Role", secondary=role_permissions, back_populates="permissions"
-    )
+    roles = relationship("Role", secondary=role_permissions, back_populates="permissions")

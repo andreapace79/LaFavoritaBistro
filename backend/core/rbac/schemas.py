@@ -1,24 +1,28 @@
+# backend/core/rbac/schemas.py
 from pydantic import BaseModel
 from typing import List, Optional
 
-class PermissionRead(BaseModel):
+class RoleBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+class RoleCreate(RoleBase):
+    permissions: List[str] = []
+
+class RoleOut(RoleBase):
     id: int
+    class Config:
+        from_attributes = True
+
+class PermissionBase(BaseModel):
     code: str
     description: Optional[str] = None
-    class Config: orm_mode = True
 
-class RoleRead(BaseModel):
+class PermissionCreate(PermissionBase):
+    pass
+
+class PermissionOut(PermissionBase):
     id: int
-    name: str
-    permissions: List[PermissionRead] = []
-    class Config: orm_mode = True
+    class Config:
+        from_attributes = True
 
-class UserRead(BaseModel):
-    id: int
-    username: str
-    roles: List[RoleRead] = []
-    class Config: orm_mode = True
-
-class UserCreate(BaseModel):
-    username: str
-    password: str

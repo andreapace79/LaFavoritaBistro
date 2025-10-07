@@ -1,26 +1,21 @@
-from sqlalchemy import Column, Integer, String, Boolean, Table, ForeignKey
+# backend/modules/users/models.py
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from backend.core.db import Base
-
-user_roles = Table(
-    "user_roles",
-    Base.metadata,
-    Column("user_id", Integer, ForeignKey("users.id"), primary_key=True),
-    Column("role_id", Integer, ForeignKey("roles.id"), primary_key=True),
-    extend_existing=True,
-)
+from backend.core.rbac.models import user_roles  # usa la tabella di rbac
 
 class User(Base):
     __tablename__ = "users"
     __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, nullable=False)
+    username = Column(String(50), unique=True, nullable=False, index=True)
     password_hash = Column(String(255), nullable=False)
-    is_active = Column(Boolean, default=True)
+    is_active = Column(Integer, default=1)
 
     roles = relationship(
-        "Role",
-        secondary="user_roles",
+        "backend.core.rbac.models.Role",
+        secondary=user_roles,
         back_populates="users",
+        lazy="joined"
     )

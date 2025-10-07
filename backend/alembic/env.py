@@ -15,12 +15,13 @@ sys.path.append(str(BASE_DIR))
 
 from core.db import Base
 # Importiamo esplicitamente i modelli per assicurarci che Alembic li veda
-from core.rbac import models as rbac_models
-from modules.audit import models as audit_models
-from modules.areas import models as areas_models
-from modules.tables import models as tables_models
-from modules.suppliers import models as suppliers_models
-from modules.inventory import models as inventory_models
+from backend.modules.users import models as users_models
+from backend.core.rbac import models as rbac_models
+from backend.modules.audit import models as audit_models
+from backend.modules.areas import models as areas_models
+from backend.modules.tables import models as tables_models
+from backend.modules.suppliers import models as suppliers_models
+from backend.modules.inventory import models as inventory_models
 
 # ==========================================================
 # Alembic Config
