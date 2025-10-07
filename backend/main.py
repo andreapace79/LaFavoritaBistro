@@ -93,7 +93,8 @@ def dev_seed(db: Session = Depends(get_db)):
         if not user:
             hashed_pw = get_password_hash("admin")
             user = users_crud.create_user(
-                db, users_schemas.UserCreate(username="admin", password=hashed_pw)
+                db, 
+                users_schemas.UserCreate(username="admin", password="admin")
             )
 
         # 2️⃣ Ruolo admin

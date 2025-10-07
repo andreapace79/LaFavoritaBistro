@@ -1,7 +1,7 @@
 """create users module clean
 
 Revision ID: aac2d111fb92
-Revises: 932bc24f8a99
+Revises: 
 Create Date: 2025-10-06 13:19:24.470260
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'aac2d111fb92'
-down_revision: Union[str, None] = '932bc24f8a99'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
