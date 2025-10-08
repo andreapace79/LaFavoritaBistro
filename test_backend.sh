@@ -10,7 +10,7 @@ curl -sf http://localhost:8000/health >/dev/null && echo "✅ OK"
 # 2️⃣ Login e token
 echo -n "2. Login (admin/admin)... "
 TOKEN=$(curl -s -X POST -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=admin&password=admin" \
+  -d "username=admin&password=admin123" \
   http://localhost:8000/auth/login | jq -r '.access_token')
 if [ "$TOKEN" = "null" ] || [ -z "$TOKEN" ]; then
   echo "❌ LOGIN FAILED"; exit 1
