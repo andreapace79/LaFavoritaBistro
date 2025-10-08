@@ -1,5 +1,4 @@
-# backend/core/rbac/models.py
-from sqlalchemy import Column, Integer, String, Table, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship
 from backend.core.db import Base
 
@@ -25,10 +24,12 @@ class Role(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(50), unique=True, nullable=False)
-    description = Column(Text, default="")
+    description = Column(Text, nullable=True)    # ✅ aggiunto
 
-    users = relationship("backend.modules.users.models.User", secondary=user_roles, back_populates="roles")
-    permissions = relationship("Permission", secondary=role_permissions, back_populates="roles")
+    users = relationship("backend.modules.users.models.User",
+                         secondary=user_roles, back_populates="roles")
+    permissions = relationship("Permission", 
+                               secondary=role_permissions, back_populates="roles")
 
 class Permission(Base):
     __tablename__ = "permissions"

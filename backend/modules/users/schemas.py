@@ -4,10 +4,13 @@ class UserBase(BaseModel):
     username: str
 
 class UserCreate(UserBase):
-    password: str   # plain in input
+    password: str
 
 class UserOut(UserBase):
     id: int
+    is_active: bool
+
     class Config:
         from_attributes = True
+
 
